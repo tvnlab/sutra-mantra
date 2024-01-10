@@ -1,9 +1,7 @@
-import MyHomes from '@app/views/admin/my-home'
+import MyHomes from "@app/views/admin/my-home";
 
 export default function Home() {
-  return (
-<MyHomes/>
-  )
+  return <MyHomes />;
 }
 
 // Home.getLayout = function getLayout(page: ReactElement) {

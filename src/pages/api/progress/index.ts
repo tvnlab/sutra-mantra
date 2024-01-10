@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import ProgressModel from "@library/api/models/progress.model";
 import message from "@library/api/utils/message";
-import { logError } from "@library/api/utils/log";
+import { logError } from "@library/api/utils/logger";
 import connectToDatabase from "@library/api/utils/database";
 
 export default async function handler(

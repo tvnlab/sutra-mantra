@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import TopicModel from "@library/api/models/topic.model";
-import { logError } from "@library/api/utils/log";
+import { logError } from "@library/api/utils/logger";
 import { TopicDto } from "@library/api/dto/topic.dto";
 import message from "@library/api/utils/message";
 

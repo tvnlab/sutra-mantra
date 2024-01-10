@@ -4,7 +4,7 @@ import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import connectToDatabase from "@library/api/utils/database";
 import TopicModel from "@library/api/models/topic.model";
 import message from "@library/api/utils/message";
-import { logError } from "@library/api/utils/log";
+import { logError } from "@library/api/utils/logger";
 import { TopicDto } from "@library/api/dto/topic.dto";
 
 export default async function handler(

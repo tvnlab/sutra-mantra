@@ -5,7 +5,7 @@ import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import connectToDatabase from "@library/api/utils/database";
 import UserModel from "@library/api/models/user.model";
 import message from "@library/api/utils/message";
-import { logError } from "@library/api/utils/log";
+import { logError } from "@library/api/utils/logger";
 
 export default async function handler(
   req: NextApiRequest,
