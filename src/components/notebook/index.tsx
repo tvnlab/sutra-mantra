@@ -4,7 +4,7 @@ import { FlippingPages } from "flipping-pages";
 import "flipping-pages/dist/style.css";
 import { ReactNode, useState } from "react";
 import Toolbar from "./Toolbar";
-import { ITopic } from "@library/api/models/topic.model";
+import { ITopic } from "@library/api/model/topic.model";
 
 const NOTEBOOK_WIDTH = 964;
 // const NOTEBOOK_HEIGHT = 1368;

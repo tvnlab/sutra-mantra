@@ -1,14 +1,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
-import TopicModel from "@library/api/models/topic.model";
+import TopicModel from "@library/api/model/topic.model";
 import { logError } from "@library/api/utils/logger";
 import { TopicDto } from "@library/api/dto/topic.dto";
 import message from "@library/api/utils/message";
+import connectToDatabase from "@library/api/utils/database";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await connectToDatabase();
+
   switch (req.method) {
     case ApiMethod.GET:
       try {
@@ -55,8 +58,7 @@ export default async function handler(
 
         const topic = new TopicModel(topicDto);
         const validationErrors = topic.validateSync();
-
-        if (Object.keys(validationErrors.errors).length > 0) {
+        if (validationErrors && Object.keys(validationErrors.errors).length > 0) {
           res
             .status(HttpStatusCode.BadRequest)
             .json({ errors: validationErrors.errors });

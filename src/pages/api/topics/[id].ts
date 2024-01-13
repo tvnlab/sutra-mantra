@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Types } from "mongoose";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import connectToDatabase from "@library/api/utils/database";
-import TopicModel from "@library/api/models/topic.model";
+import TopicModel from "@library/api/model/topic.model";
 import message from "@library/api/utils/message";
 import { logError } from "@library/api/utils/logger";
 import { TopicDto } from "@library/api/dto/topic.dto";

@@ -4,7 +4,7 @@ import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import connectToDatabase from "@library/api/utils/database";
 import message from "@library/api/utils/message";
 import { logError } from "@library/api/utils/logger";
-import ProgressModel from "@library/api/models/progress.model";
+import ProgressModel from "@library/api/model/progress.model";
 import { ProgressDto } from "@library/api/dto/progress.dto";
 
 export default async function handler(

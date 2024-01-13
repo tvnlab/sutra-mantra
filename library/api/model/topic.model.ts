@@ -7,9 +7,21 @@ import { ITopic } from "../dto/topic.dto";
 
 export type ITopicDoc = ITopic & Document;
 
+type TopicModelType = mongoose.Model<
+  ITopic,
+  {},
+  {},
+  {},
+  mongoose.Document<unknown, {}, ITopic> &
+    ITopic &
+    Required<{
+      _id: string;
+    }>,
+  any
+>;
+
 const topicSchema = new Schema<ITopic>(
   {
-    name: { type: String, required: true },
     category: {
       type: String,
       default: CategoryCode.TRANSCRIBING_BUDDHA_NAME,
@@ -25,6 +37,8 @@ const topicSchema = new Schema<ITopic>(
   { versionKey: false }
 );
 
-const TopicModel = mongoose.model<ITopic>("Topic", topicSchema);
+const TopicModel =
+  (mongoose.models.Topic as TopicModelType) ||
+  (mongoose.model<ITopic>("Topic", topicSchema) as TopicModelType);
 
 export default TopicModel;

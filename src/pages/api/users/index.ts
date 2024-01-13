@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import connectToDatabase from "@library/api/utils/database";
-import UserModel from "@library/api/models/user.model";
+import UserModel from "@library/api/model/user.model";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import message from "@library/api/utils/message";
 import { UserDto } from "@library/api/dto/user.dto";
