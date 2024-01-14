@@ -1,18 +1,18 @@
-import { HttpStatusCode } from "./../utils/constants";
-import jwt from "jsonwebtoken";
-import { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
+import { checkHasToken, verifyToken } from "../utils/auth";
+import { HttpStatusCode } from "../utils/constants";
+import { logError } from "../utils/logger";
+import message from "../utils/message";
 
-export const authenticateToken = (
+// Middleware functions
+export const checkValidToken = (
   req: NextApiRequest,
   res: NextApiResponse,
-  next: NextApiHandler
 ) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  if (!token) return res.status(401).json({ error: "Unauthenticated" });
-  if (!process.env.AUTH_SECRET_KEY)
-    return res
-      .status(HttpStatusCode.InternalServerError)
-      .json({ error: "No pwd secret keys set up" });
+  // Extract the access token from the request headers
+  const token = checkHasToken(req, res);
 
-//   jwt.verify(token, process.env.AUTH_SECRET_KEY).;
+  // Verify the access token
+  const userId = verifyToken(token);
+  return userId;
 };

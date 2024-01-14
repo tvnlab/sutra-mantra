@@ -9,7 +9,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== ApiMethod.POST) {
+  if (![ApiMethod.POST].includes(req.method as ApiMethod)) {
     logError(res, HttpStatusCode.MethodNotAllowed);
   }
 

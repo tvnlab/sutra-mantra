@@ -27,7 +27,8 @@ const message: MessageLog = {
     require: (model: string) => `${model} is not empty`,
     existing: (model: string) => `${model} already exists`,
     expired: (model: string) => `${model} has expired`,
-    invalid: (model: string) => `Invalid ${model}"`
+    invalid: (model: string) => `Invalid ${model}"`,
+    noToken: 'Token is not provided' 
     
   },
 };

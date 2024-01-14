@@ -6,13 +6,20 @@ import connectToDatabase from "@library/api/utils/database";
 import UserModel from "@library/api/model/user.model";
 import message from "@library/api/utils/message";
 import { logError } from "@library/api/utils/logger";
+import { checkValidToken } from "@library/api/middleware/auth.middleware";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await connectToDatabase();
 
+  if (![ApiMethod.GET, ApiMethod.PUT, ApiMethod.DELETE].includes(req.method as ApiMethod)) {
+    logError(res, HttpStatusCode.MethodNotAllowed);
+  }
+
+  await connectToDatabase();
+  checkValidToken(req, res);
+  
   const userId = req.query.id as string;
 
   switch (req.method) {

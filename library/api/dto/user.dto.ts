@@ -1,9 +1,9 @@
 export interface UserDto {
   displayName: string;
   email: string;
-  password: string;
-  refreshToken: string;
-  isRememberMe: boolean;
+  password?: string;
+  refreshToken?: string;
+  isRememberMe?: boolean;
 }
 
 export interface IUser extends UserDto {

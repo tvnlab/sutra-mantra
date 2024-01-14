@@ -1,5 +1,7 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import message from "./message";
+import { HttpStatusCode } from "./constants";
 
 export const generateAccessToken = (
   userId: string,
@@ -33,8 +35,19 @@ export function verifyToken(token: string, isRefresh?: boolean): string {
       );
     }
 
-    return decodedToken.userId;
+    return decodedToken.userId as string;
   } catch (error) {
     throw new Error("Invalid token");
   }
+}
+
+export function checkHasToken(req: NextApiRequest, res?: NextApiResponse) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!res) return token;
+  if (!token) {
+    res
+      .status(HttpStatusCode.Unauthorized)
+      .json({ message: message.error.noToken });
+  }
+  return token;
 }

@@ -4,13 +4,19 @@ import UserModel from "@library/api/model/user.model";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import message from "@library/api/utils/message";
 import { UserDto } from "@library/api/dto/user.dto";
+import { checkValidToken } from "@library/api/middleware/auth.middleware";
+import { logError } from "@library/api/utils/logger";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await connectToDatabase();
+  if (![ApiMethod.GET, ApiMethod.POST].includes(req.method as ApiMethod)) {
+    logError(res, HttpStatusCode.MethodNotAllowed);
+  }
 
+  await connectToDatabase();
+  checkValidToken(req, res);
   switch (req.method) {
     case ApiMethod.GET:
       try {
@@ -73,8 +79,6 @@ export default async function handler(
       break;
 
     default:
-      res
-        .status(HttpStatusCode.MethodNotAllowed)
-        .json({ message: message.error[HttpStatusCode.MethodNotAllowed] });
+      logError(res, HttpStatusCode.MethodNotAllowed);
   }
 }

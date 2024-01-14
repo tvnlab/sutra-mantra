@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
-import ProgressModel from "@library/api/model/progress.model";
-import message from "@library/api/utils/message";
 import { logError } from "@library/api/utils/logger";
 import connectToDatabase from "@library/api/utils/database";
 import UserModel, { IUserDoc } from "@library/api/model/user.model";
@@ -11,7 +9,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (![ApiMethod.POST].includes(req.method as ApiMethod)) {
+    logError(res, HttpStatusCode.MethodNotAllowed);
+  }
+
   await connectToDatabase();
+
   switch (req.method) {
     case ApiMethod.POST:
       try {

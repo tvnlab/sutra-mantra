@@ -5,12 +5,18 @@ import { logError } from "@library/api/utils/logger";
 import { TopicDto } from "@library/api/dto/topic.dto";
 import message from "@library/api/utils/message";
 import connectToDatabase from "@library/api/utils/database";
+import { checkValidToken } from "@library/api/middleware/auth.middleware";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await connectToDatabase();
+  if (![ApiMethod.GET, ApiMethod.POST].includes(req.method as ApiMethod)) {
+    logError(res, HttpStatusCode.MethodNotAllowed);
+  }
+
+  await connectToDatabase(); // Connect to your MongoDB database
+  checkValidToken(req, res);
 
   switch (req.method) {
     case ApiMethod.GET:

@@ -5,16 +5,18 @@ import connectToDatabase from "@library/api/utils/database";
 import message from "@library/api/utils/message";
 import { NextApiRequest, NextApiResponse } from "next";
 import { logError } from "@library/api/utils/logger";
+import { checkValidToken } from "@library/api/middleware/auth.middleware";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== ApiMethod.POST) {
+  if (![ApiMethod.POST].includes(req.method as ApiMethod)) {
     logError(res, HttpStatusCode.MethodNotAllowed);
   }
 
   await connectToDatabase(); // Connect to your MongoDB database
+  checkValidToken(req, res);
 
   // Extract the refresh token from the request body
   const { refreshToken } = req.body;
