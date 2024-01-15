@@ -9,29 +9,40 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import message from "@library/api/utils/message";
+
 const schema = yup
   .object({
-    email: yup.string().required(message.error.require("Email")).email('Invalid email'),
+    name: yup.string().required(message.error.require("Name")),
+    email: yup.string().required(message.error.require("Email")),
     password: yup.string().required(message.error.require("Password")),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
   })
   .required();
 
 interface IFormInput {
+  name?: string;
   email?: string;
   password?: string;
+  confirmPassword?: string;
 }
-export default function SignIn() {
+
+export default function SignUp() {
   const { control, handleSubmit, formState } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const { errors } = formState;
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+
   return (
     <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10">
       {/* Sign in section */}
@@ -40,17 +51,17 @@ export default function SignIn() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
-          Sign In
+          Sign Up
         </h4>
         <p className="mb-9 ml-1 text-base text-gray-600">
-          Enter your email and password to sign in!
+          Enter your info to sign up!
         </p>
         <div className="mb-6 flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-lightPrimary hover:cursor-pointer dark:bg-navy-800">
           <div className="rounded-full text-xl">
             <FcGoogle />
           </div>
           <h5 className="text-sm font-medium text-navy-700 dark:text-white">
-            Sign In with Google
+            Sign Up with Google
           </h5>
         </div>
         <div className="mb-6 flex items-center  gap-3">
@@ -58,6 +69,25 @@ export default function SignIn() {
           <p className="text-base text-gray-600 dark:text-white"> or </p>
           <div className="h-px w-full bg-gray-200 dark:bg-navy-700" />
         </div>
+        {/* Display Name */}
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <InputField
+              {...field}
+              variant="auth"
+              extra="mb-3"
+              label="Your Name*"
+              placeholder="Buddha Amitabha..."
+              id="name"
+              type="text"
+              state={errors?.name ? "error" : undefined}
+              helpText={errors?.name?.message}
+            />
+          )}
+        />
+
         {/* Email */}
         <Controller
           name="email"
@@ -96,12 +126,31 @@ export default function SignIn() {
           )}
         />
 
+        {/* Confirm Password */}
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field }) => (
+            <InputField
+              {...field}
+              variant="auth"
+              extra="mb-3"
+              label="Confirm Password*"
+              placeholder="Min. 8 characters"
+              id="confirmPassword"
+              type="password"
+              state={errors?.confirmPassword ? "error" : undefined}
+              helpText={errors?.confirmPassword?.message}
+            />
+          )}
+        />
+
         {/* Checkbox */}
         <div className="mb-4 flex items-center justify-between px-2">
           <div className="flex items-center">
             <Checkbox />
             <p className="ml-2 text-sm font-medium text-navy-700 dark:text-white">
-              Keep me logged In
+              Keep me logged in
             </p>
           </div>
           <Link
@@ -116,13 +165,13 @@ export default function SignIn() {
         </button>
         <div className="mt-4 flex justify-center">
           <span className=" text-sm font-medium text-navy-700 dark:text-gray-600">
-            Not registered yet?
+            Already have an account?
           </span>
           <Link
-            href={Routes.REGISTER}
+            href={Routes.LOGIN}
             className="ml-1 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
           >
-            Create an account
+            Login Now!
           </Link>
         </div>
       </form>

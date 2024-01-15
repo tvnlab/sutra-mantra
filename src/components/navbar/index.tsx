@@ -1,8 +1,10 @@
+import { Routes } from "@app/utils/routes";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import { FiSearch } from "react-icons/fi";
-import { RiMoonFill, RiSunFill } from "react-icons/ri";
+import { RiMoonFill, RiSunFill, RiUser3Fill } from "react-icons/ri";
 
 const Navbar = (props: {
   onOpenSideNav: () => void;
@@ -10,7 +12,11 @@ const Navbar = (props: {
   secondary?: boolean | string;
 }) => {
   const { onOpenSideNav, brandText } = props;
+
+  const router = useRouter();
+
   const [darkMode, setDarkMode] = React.useState(true);
+  const [isLoggedIn] = React.useState(false);
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
@@ -78,7 +84,18 @@ const Navbar = (props: {
             <RiMoonFill className="h-4 w-4 text-gray-600 dark:text-white" />
           )}
         </div>
-        
+        <div
+          className="cursor-pointer text-gray-600"
+          onClick={() => {
+            if (isLoggedIn) {
+              router.push(Routes.SETTINGS);
+            } else {
+              router.push(Routes.LOGIN);
+            }
+          }}
+        >
+          <RiUser3Fill className="h-4 w-4 text-gray-600 dark:text-white" />
+        </div>
       </div>
     </nav>
   );

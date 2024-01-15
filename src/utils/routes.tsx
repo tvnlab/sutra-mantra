@@ -7,6 +7,7 @@ import Transcribing from "@app/views/admin/transcribing";
 
 // Auth Imports
 import SignIn from "@app/views/auth/SignIn";
+import SignUp from "@app/views/auth/SignUp";
 
 // Icon Imports
 import {
@@ -18,9 +19,11 @@ import { FaBookOpen, FaPenAlt } from "react-icons/fa";
 import { GiStairsGoal } from "react-icons/gi";
 
 
+
 export enum Routes {
   INDEX = '/',
   LOGIN = '/login',
+  REGISTER = '/register',
   TRANSCRIBING = '/transcribing',
   RESOURCES = '/resources',
   COMMUNITIES = '/communities',
@@ -69,6 +72,13 @@ export const appMenus = [
     path: Routes.LOGIN,
     icon: <MdLock className="h-6 w-6" />,
     component: <SignIn />,
+    showOnMenu: false,
+  },
+  {
+    name: "Sign Up",
+    path: Routes.REGISTER,
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignUp />,
     showOnMenu: false,
   },
 ];

@@ -7,12 +7,23 @@ function InputField(props: {
   extra: string;
   placeholder: string;
   variant: string;
-  state?: string;
+  state?: "error" | "success" | "info";
   disabled?: boolean;
   type?: string;
+  helpText?: string;
 }) {
-  const { label, id, extra, type, placeholder, variant, state, disabled } =
-    props;
+  const {
+    label,
+    id,
+    extra,
+    type,
+    placeholder,
+    variant,
+    state,
+    disabled,
+    helpText,
+    ...rest
+  } = props;
 
   return (
     <div className={`${extra}`}>
@@ -25,6 +36,7 @@ function InputField(props: {
         {label}
       </label>
       <input
+        {...rest}
         disabled={disabled}
         type={type}
         id={id}
@@ -39,6 +51,19 @@ function InputField(props: {
             : "border-gray-200 dark:!border-white/10 dark:text-white"
         }`}
       />
+      {helpText && (
+        <p
+          className={`mt-2 text-xs outline-none ${
+            state === "error"
+              ? "text-red-500 dark:!text-red-400"
+              : state === "success"
+              ? " text-green-500 dark:!text-green-400"
+              : "dark:text-white"
+          }`}
+        >
+          {helpText}
+        </p>
+      )}
     </div>
   );
 }
