@@ -9,9 +9,13 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import message from "@library/api/utils/message";
+import useAuthStore from "@app/hooks/stores/useAuthStore";
 const schema = yup
   .object({
-    email: yup.string().required(message.error.require("Email")).email('Invalid email'),
+    email: yup
+      .string()
+      .required(message.error.require("Email"))
+      .email("Invalid email"),
     password: yup.string().required(message.error.require("Password")),
   })
   .required();
@@ -19,6 +23,7 @@ const schema = yup
 interface IFormInput {
   email?: string;
   password?: string;
+  rememberMe?: boolean;
 }
 export default function SignIn() {
   const { control, handleSubmit, formState } = useForm<IFormInput>({
@@ -28,10 +33,13 @@ export default function SignIn() {
       password: "",
     },
   });
+  const { login, error, isLoading } = useAuthStore();
 
   const { errors } = formState;
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    login(data.email, data.password);
+  };
   return (
     <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10">
       {/* Sign in section */}
@@ -99,7 +107,13 @@ export default function SignIn() {
         {/* Checkbox */}
         <div className="mb-4 flex items-center justify-between px-2">
           <div className="flex items-center">
-            <Checkbox />
+            <Controller
+              name="rememberMe"
+              control={control}
+              render={({ field }) => (
+                <Checkbox {...field} variant="auth" />
+              )}
+            />
             <p className="ml-2 text-sm font-medium text-navy-700 dark:text-white">
               Keep me logged In
             </p>
@@ -111,7 +125,12 @@ export default function SignIn() {
             Forgot Password?
           </Link>
         </div>
-        <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+        {error && <p className="text-red-500">{error}</p>}
+        <button
+          disabled={isLoading}
+          type="submit"
+          className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
+        >
           Submit
         </button>
         <div className="mt-4 flex justify-center">

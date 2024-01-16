@@ -28,8 +28,7 @@ const message: MessageLog = {
     existing: (model: string) => `${model} already exists`,
     expired: (model: string) => `${model} has expired`,
     invalid: (model: string) => `Invalid ${model}"`,
-    noToken: 'Token is not provided' 
-    
+    noToken: "Token is not provided",
   },
 };
 

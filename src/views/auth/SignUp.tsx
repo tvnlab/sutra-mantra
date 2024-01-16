@@ -9,6 +9,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import message from "@library/api/utils/message";
+import useRegisterStore from "@app/hooks/stores/useRegisterStore";
 
 const schema = yup
   .object({
@@ -39,10 +40,15 @@ export default function SignUp() {
     },
   });
 
+  const { registerAccount, error, isLoading } = useRegisterStore();
+
   const { errors } = formState;
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
-
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      await registerAccount(data.name, data.email, data.password);
+    } catch (error) {}
+  };
   return (
     <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10">
       {/* Sign in section */}
@@ -145,22 +151,12 @@ export default function SignUp() {
           )}
         />
 
-        {/* Checkbox */}
-        <div className="mb-4 flex items-center justify-between px-2">
-          <div className="flex items-center">
-            <Checkbox />
-            <p className="ml-2 text-sm font-medium text-navy-700 dark:text-white">
-              Keep me logged in
-            </p>
-          </div>
-          <Link
-            className="text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
-            href="#"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-        <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+        {error && <p className="text-red-500">{error}</p>}
+        <button
+          disabled={isLoading}
+          type="submit"
+          className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
+        >
           Submit
         </button>
         <div className="mt-4 flex justify-center">

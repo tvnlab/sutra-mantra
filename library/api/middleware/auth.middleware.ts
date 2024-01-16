@@ -1,8 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { checkHasToken, verifyToken } from "../utils/auth";
-import { HttpStatusCode } from "../utils/constants";
-import { logError } from "../utils/logger";
-import message from "../utils/message";
 
 // Middleware functions
 export const checkValidToken = (

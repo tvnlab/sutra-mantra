@@ -3,6 +3,7 @@ import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import connectToDatabase from "@library/api/utils/database";
 import { logError } from "@library/api/utils/logger";
 import message from "@library/api/utils/message";
+import { omit } from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -32,7 +33,7 @@ export default async function handler(
 
     res
       .status(HttpStatusCode.Created)
-      .json({ message: message.success.registerSuccess, data: newUser });
+      .json({ message: message.success.registerSuccess, data:  omit(newUser, 'password') });
   } catch (error) {
     console.error("Error registering user:", error);
     logError(res, HttpStatusCode.InternalServerError);

@@ -10,3 +10,8 @@ export interface IUser extends UserDto {
   _id: string;
   createdAt?: Date;
 }
+
+export interface SessionToken{
+  accessToken: string;
+  refreshToken: string;
+}
