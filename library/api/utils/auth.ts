@@ -51,3 +51,17 @@ export function checkHasToken(req: NextApiRequest, res?: NextApiResponse) {
   }
   return token;
 }
+
+export const generateFingerprintingId = ({
+  acceptLanguage,
+  platform,
+  resolution,
+  userAgent,
+}: {
+  userAgent: string;
+  acceptLanguage: string;
+  platform: string;
+  resolution: string;
+}): string => {
+  return userAgent + acceptLanguage + platform + resolution;
+};

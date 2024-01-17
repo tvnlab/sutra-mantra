@@ -1,6 +1,5 @@
 import InputField from "@app/components/fields/InputField";
 import { FcGoogle } from "react-icons/fc";
-import Checkbox from "@app/components/checkbox";
 import Link from "next/link";
 import { Routes } from "@app/utils/routes";
 
@@ -10,6 +9,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import message from "@library/api/utils/message";
 import useRegisterStore from "@app/hooks/stores/useRegisterStore";
+import { useRouter } from "next/navigation";
+import { toastGlobal } from "@app/layouts/main";
 
 const schema = yup
   .object({
@@ -30,6 +31,7 @@ interface IFormInput {
 }
 
 export default function SignUp() {
+  const router = useRouter();
   const { control, handleSubmit, formState } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -47,7 +49,21 @@ export default function SignUp() {
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       await registerAccount(data.name, data.email, data.password);
-    } catch (error) {}
+      toastGlobal({
+        description: "We've created your account for you.",
+        status: "success",
+        onCloseComplete() {
+          router.push(Routes.LOGIN);
+        },
+      });
+    } catch (error) {
+      toastGlobal({
+        description: `We cannot create your account cause some reason. 
+          Please send a email to us. We will support you as soon as possible!. 
+          Thank you`,
+        status: "error",
+      });
+    }
   };
   return (
     <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10">

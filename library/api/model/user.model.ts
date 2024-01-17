@@ -24,6 +24,10 @@ type UserModelType = mongoose.Model<
 
 const userSchema = new Schema<IUserDoc>(
   {
+    fingerprintingId: {
+      type: String,
+      unique: true,
+    },
     displayName: {
       type: String,
       required: [true, message.error.require("Display name")],
@@ -42,7 +46,12 @@ const userSchema = new Schema<IUserDoc>(
       type: Boolean,
       default: false,
     },
+    isAnonymous: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
   { versionKey: false }
 );

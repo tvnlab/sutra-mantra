@@ -18,15 +18,19 @@ export default async function handler(
   switch (req.method) {
     case ApiMethod.POST:
       try {
-        const { email, password } = req.body;
-        const user: IUserDoc | null = await UserModel.findOne({ email });
-
-        if (user && (await user.comparePassword(password))) {
+        const { username, password, isKeepLoggedIn } = req.body;
+        const user: IUserDoc | null = await UserModel.findOne({
+          email: username,
+        });
+        const isValidUser = await user.comparePassword(password);
+        if (user && isValidUser) {
           const accessToken = jwt.sign(
             { userId: user._id },
             process.env.AUTH_ACCESS_TOKEN_SECRET,
             {
-              expiresIn: process.env.AUTH_ACCESS_TOKEN_EXPIRED || "1d",
+              expiresIn: isKeepLoggedIn
+                ? process.env.AUTH_ACCESS_TOKEN_KEEP_LOGIN_EXPIRED
+                : process.env.AUTH_ACCESS_TOKEN_EXPIRED || "1d",
             }
           );
           const refreshToken = jwt.sign(

@@ -13,7 +13,7 @@
 	}
 }
 
-input.defaultCheckbox::before {
+/* input.defaultCheckbox::before {
 	content: url(../assets/svg/checked.svg); 
 	color: white;
 	opacity: 0; 
@@ -26,7 +26,7 @@ input.defaultCheckbox::before {
 
 input:checked.defaultCheckbox::before { 
 	opacity: 1;
-}
+} */
 
 /* width */
 ::-webkit-scrollbar {

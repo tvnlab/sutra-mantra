@@ -40,6 +40,7 @@ export default function SignIn() {
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     login(data.email, data.password);
   };
+
   return (
     <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10">
       {/* Sign in section */}
@@ -105,18 +106,17 @@ export default function SignIn() {
         />
 
         {/* Checkbox */}
-        <div className="mb-4 flex items-center justify-between px-2">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
             <Controller
               name="rememberMe"
               control={control}
               render={({ field }) => (
-                <Checkbox {...field} variant="auth" />
+                <Checkbox {...field}>
+                    Keep me logged In
+                </Checkbox>
               )}
             />
-            <p className="ml-2 text-sm font-medium text-navy-700 dark:text-white">
-              Keep me logged In
-            </p>
           </div>
           <Link
             className="text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"

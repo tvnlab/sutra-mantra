@@ -4,6 +4,18 @@ import Sidebar from "@app/components/sidebar";
 import Footer from "@app/components/footer/Footer";
 import { usePathname } from "next/navigation";
 import { appMenus } from "@app/utils/routes";
+import { createStandaloneToast } from "@chakra-ui/toast";
+
+const { ToastContainer, toast } = createStandaloneToast({
+  defaultOptions: {
+    position: "top",
+    title: "Notification",
+    duration: 5000,
+    isClosable: true,
+  },
+});
+
+export const toastGlobal = toast;
 
 interface MainLayoutProps {
   [x: string]: any;
@@ -74,6 +86,7 @@ export default function MainLayout(props: MainLayoutProps) {
           </div>
         </main>
       </div>
+      <ToastContainer />
     </div>
   );
 }

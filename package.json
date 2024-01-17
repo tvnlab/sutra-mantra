@@ -9,8 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/popover": "^2.2.1",
-    "@chakra-ui/tooltip": "^2.3.1",
+    "@chakra-ui/react": "^2.8.2",
     "@hookform/resolvers": "^3.3.4",
     "@tanstack/react-table": "^8.11.3",
     "apexcharts": "^3.45.1",
