@@ -4,6 +4,7 @@ import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import { logError } from "@library/api/utils/logger";
 import connectToDatabase from "@library/api/utils/database";
 import UserModel, { IUserDoc } from "@library/api/model/user.model";
+import { omit } from "lodash";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +19,7 @@ export default async function handler(
   switch (req.method) {
     case ApiMethod.POST:
       try {
-        const { username, password, isKeepLoggedIn } = req.body;
+        const { username, password, isRememberMe } = req.body;
         const user: IUserDoc | null = await UserModel.findOne({
           email: username,
         });
@@ -28,7 +29,7 @@ export default async function handler(
             { userId: user._id },
             process.env.AUTH_ACCESS_TOKEN_SECRET,
             {
-              expiresIn: isKeepLoggedIn
+              expiresIn: isRememberMe
                 ? process.env.AUTH_ACCESS_TOKEN_KEEP_LOGIN_EXPIRED
                 : process.env.AUTH_ACCESS_TOKEN_EXPIRED || "1d",
             }
@@ -44,7 +45,11 @@ export default async function handler(
           user.refreshToken = refreshToken;
           await user.save();
 
-          res.json({ accessToken, refreshToken });
+          res.json({
+            accessToken,
+            refreshToken,
+            user: omit(user, "password", "fingerprintingId", "device"),
+          });
         } else {
           logError(res, HttpStatusCode.Unauthorized);
         }

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 import { IUser } from "../dto/user.dto";
 import message from "../utils/message";
+import { UserRole } from "../utils/constants";
 
 export type IUserDoc = Document &
   IUser & {
@@ -28,6 +29,10 @@ const userSchema = new Schema<IUserDoc>(
       type: String,
       unique: true,
     },
+    device:{
+      type: String,
+      unique: true
+    },
     displayName: {
       type: String,
       required: [true, message.error.require("Display name")],
@@ -49,6 +54,10 @@ const userSchema = new Schema<IUserDoc>(
     isAnonymous: {
       type: Boolean,
       default: false,
+    },
+    role:{
+      type: String,
+      default: UserRole.USER
     },
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },

@@ -8,22 +8,26 @@ export const handleRefreshTokenApi = (refreshToken: string) => {
 export const handleLoginApi = (
   username: string,
   password: string,
-  isKeepLoggedIn = false
+  isRememberMe = false
 ) => {
   return apiClient.post<SessionToken>("/auth/login", {
     username,
     password,
-    isKeepLoggedIn,
+    isRememberMe,
   });
 };
 export const handleRegisterApi = (
   displayName: string,
-  email:string,
+  email: string,
   password: string,
+  resolution: string,
+  isAnonymous?: boolean
 ) => {
   return apiClient.post<IUser>("/auth/register", {
     displayName,
     email,
     password,
+    resolution,
+    isAnonymous,
   });
 };

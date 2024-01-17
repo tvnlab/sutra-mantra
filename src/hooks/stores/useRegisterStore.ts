@@ -16,12 +16,12 @@ const useRegisterStore = create<RegisterState & RegisterActions>((set) => ({
   error: null,
   isLoading: false,
 
-  registerAccount: async (displayName: string, email: string, password: string) => {
+  registerAccount: async (displayName: string, email: string, password: string, isAnonymous = false) => {
     set({ isLoading: true, error: null });
-
+    const resolution = `${window.screen.width}x${window.screen.height}`
     try {
       // Make your registration API call here
-      await handleRegisterApi(displayName, email, password);
+      await handleRegisterApi(displayName, email, password, resolution, isAnonymous);
 
       // Update Zustand state on successful registration
       set({ isRegistered: true, isLoading: false, error: null });

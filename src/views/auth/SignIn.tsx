@@ -38,7 +38,7 @@ export default function SignIn() {
   const { errors } = formState;
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    login(data.email, data.password);
+    login(data.email, data.password, data.rememberMe);
   };
 
   return (

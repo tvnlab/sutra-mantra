@@ -24,17 +24,14 @@ export default async function handler(
     displayName,
     email,
     password,
-    platform,
     resolution,
     isAnonymous,
-    isRememberMe,
   } = req.body;
 
   try {
     const fingerprintingId = generateFingerprintingId({
       userAgent,
       acceptLanguage,
-      platform,
       resolution,
     });
     if (isAnonymous) {
@@ -48,7 +45,7 @@ export default async function handler(
 
         return res.status(HttpStatusCode.Created).json({
           message: message.success.registerSuccess,
-          data: omit(existingUserByFingerprintingId, "password", "fingerprintingId"),
+          data: omit(existingUserByFingerprintingId, "password", "fingerprintingId", "device"),
         });
       }
       const anonymousName = "Anonymous-" + fingerprintingId;
@@ -60,6 +57,7 @@ export default async function handler(
         email: `${anonymousName}@sutramantra.today`,
         isRememberMe: true,
         password: anonymousName,
+        device: `${userAgent}|_|${acceptLanguage}|_|${resolution}`
       });
       await newUser.save();
       return res.status(HttpStatusCode.Created).json({
@@ -82,13 +80,14 @@ export default async function handler(
         password,
         fingerprintingId,
         isAnonymous: false,
-        isRememberMe,
+        isRememberMe: false,
+        device: `${userAgent}|_|${acceptLanguage}|_|${resolution}`,
       });
       await newUser.save();
 
       return res.status(HttpStatusCode.Created).json({
         message: message.success.registerSuccess,
-        data: omit(newUser, "password", "fingerprintingId"),
+        data: omit(newUser, "password", "fingerprintingId", "device"),
       });
     }
   } catch (error) {

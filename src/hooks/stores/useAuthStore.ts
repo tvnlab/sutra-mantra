@@ -1,9 +1,11 @@
 import { handleLoginApi } from "@app/services/auth";
 import { SESSION_KEY } from "@app/utils/constant";
+import { IUser } from "@library/api/dto/user.dto";
 import { create } from "zustand";
 
 interface AuthState {
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
+  user?: IUser;
   error: string | null;
   isLoading: boolean;
 }
@@ -18,7 +20,7 @@ interface AuthActions {
 }
 
 const useAuthStore = create<AuthState & AuthActions>((set) => ({
-  isAuthenticated: false,
+  isAuthenticated: null,
   error: null,
   isLoading: false,
 
@@ -35,7 +37,12 @@ const useAuthStore = create<AuthState & AuthActions>((set) => ({
       );
 
       // Update Zustand state
-      set({ isAuthenticated: true, isLoading: false, error: null });
+      set({
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+        user: authToken.data.user,
+      });
 
       // You can save the authentication token to localStorage or handle it as needed
       localStorage.setItem(SESSION_KEY, JSON.stringify(authToken.data));

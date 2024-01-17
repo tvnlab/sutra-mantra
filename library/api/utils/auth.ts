@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import message from "./message";
 import { HttpStatusCode } from "./constants";
 
@@ -54,14 +55,17 @@ export function checkHasToken(req: NextApiRequest, res?: NextApiResponse) {
 
 export const generateFingerprintingId = ({
   acceptLanguage,
-  platform,
   resolution,
   userAgent,
 }: {
   userAgent: string;
   acceptLanguage: string;
-  platform: string;
   resolution: string;
 }): string => {
-  return userAgent + acceptLanguage + platform + resolution;
+  // Combine relevant information
+  const combinedInfo = userAgent + acceptLanguage + resolution;
+  // Create a hash using a simple hashing algorithm (e.g., SHA-256)
+  const hash = crypto.createHash("sha256").update(combinedInfo).digest("hex");
+
+  return hash;
 };

@@ -38,3 +38,8 @@ export enum TopicAchievement {
 }
 
 export const TOPIC_COUNT_DEFAULT = 1;
+
+export enum UserRole{
+  ADMIN = 'ADMIN',
+  USER = 'USER'
+}
