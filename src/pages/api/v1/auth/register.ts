@@ -1,5 +1,9 @@
 import UserModel from "@library/api/model/user.model";
-import { generateFingerprintingId } from "@library/api/utils/auth";
+import {
+  generateAccessToken,
+  generateFingerprintingId,
+  generateRefreshToken,
+} from "@library/api/utils/auth";
 import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
 import connectToDatabase from "@library/api/utils/database";
 import { logError } from "@library/api/utils/logger";
@@ -20,13 +24,7 @@ export default async function handler(
   const userAgent = req.headers["user-agent"] || "";
   const acceptLanguage = req.headers["accept-language"] || "";
 
-  const {
-    displayName,
-    email,
-    password,
-    resolution,
-    isAnonymous,
-  } = req.body;
+  const { displayName, email, password, resolution, isAnonymous } = req.body;
 
   try {
     const fingerprintingId = generateFingerprintingId({
@@ -34,18 +32,34 @@ export default async function handler(
       acceptLanguage,
       resolution,
     });
+    const refreshToken = generateRefreshToken();
+
     if (isAnonymous) {
       // Check if the user already exists with the given fingerprintingId
       const existingUserByFingerprintingId = await UserModel.findOne({
         fingerprintingId,
       });
+      const isRememberMe = true;
+      const accessToken = generateAccessToken(
+        existingUserByFingerprintingId._id,
+        isRememberMe
+      );
 
       if (existingUserByFingerprintingId) {
         // User already exists, return an error
 
         return res.status(HttpStatusCode.Created).json({
           message: message.success.registerSuccess,
-          data: omit(existingUserByFingerprintingId, "password", "fingerprintingId", "device"),
+          data: {
+            user: omit(
+              existingUserByFingerprintingId,
+              "password",
+              "fingerprintingId",
+              "device"
+            ),
+            accessToken,
+            refreshToken,
+          },
         });
       }
       const anonymousName = "Anonymous-" + fingerprintingId;
@@ -55,14 +69,19 @@ export default async function handler(
         isAnonymous: true,
         displayName: anonymousName,
         email: `${anonymousName}@sutramantra.today`,
-        isRememberMe: true,
+        isRememberMe,
         password: anonymousName,
-        device: `${userAgent}|_|${acceptLanguage}|_|${resolution}`
+        device: `${userAgent}|_|${acceptLanguage}|_|${resolution}`,
+        refreshToken,
       });
       await newUser.save();
       return res.status(HttpStatusCode.Created).json({
         message: message.success.registerSuccess,
-        data: omit(newUser, "password", fingerprintingId),
+        data: {
+          user: omit(newUser, "password", "fingerprintingId", "device"),
+          accessToken,
+          refreshToken,
+        },
       });
     } else {
       // Check if the user already exists
@@ -82,12 +101,17 @@ export default async function handler(
         isAnonymous: false,
         isRememberMe: false,
         device: `${userAgent}|_|${acceptLanguage}|_|${resolution}`,
+        refreshToken,
       });
       await newUser.save();
-
+      const accessToken = generateAccessToken(newUser._id, false);
       return res.status(HttpStatusCode.Created).json({
         message: message.success.registerSuccess,
-        data: omit(newUser, "password", "fingerprintingId", "device"),
+        data: {
+          user: omit(newUser, "password", "fingerprintingId", "device"),
+          accessToken,
+          refreshToken,
+        },
       });
     }
   } catch (error) {
