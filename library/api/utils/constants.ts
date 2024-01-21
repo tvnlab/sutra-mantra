@@ -43,3 +43,7 @@ export enum UserRole{
   ADMIN = 'ADMIN',
   USER = 'USER'
 }
+
+export enum TopicSortBy {
+  CREATED_AT = 'createdAt'
+}

@@ -55,15 +55,13 @@ export function checkHasToken(req: NextApiRequest, res?: NextApiResponse) {
 
 export const generateFingerprintingId = ({
   acceptLanguage,
-  resolution,
   userAgent,
 }: {
   userAgent: string;
   acceptLanguage: string;
-  resolution: string;
 }): string => {
   // Combine relevant information
-  const combinedInfo = userAgent + acceptLanguage + resolution;
+  const combinedInfo = userAgent + acceptLanguage;
   // Create a hash using a simple hashing algorithm (e.g., SHA-256)
   const hash = crypto.createHash("sha256").update(combinedInfo).digest("hex");
 

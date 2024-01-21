@@ -16,6 +16,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ children, ...rest }) => {
       {...rest}
       __css={{
         display: "flex",
+        cursor: 'pointer',
         ".chakra-checkbox__control": {
           border: `1px solid rgb(255 255 255 / 0.1)`,
           backgroundColor: "transparent",

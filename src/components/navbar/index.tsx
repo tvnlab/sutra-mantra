@@ -56,7 +56,7 @@ const Navbar = (props: {
           </p>
           <input
             type="text"
-            placeholder="Search a Buddhist book name..."
+            placeholder="Find everything..."
             className="bg-lightPrimary block h-full !w-full rounded-full text-sm font-medium text-navy-700 outline-none placeholder:!text-gray-400 sm:w-fit dark:bg-navy-900 dark:text-white dark:placeholder:!text-white"
           />
         </div>

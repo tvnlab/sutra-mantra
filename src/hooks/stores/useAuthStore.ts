@@ -1,6 +1,6 @@
 import { handleLoginApi } from "@app/services/auth";
 import { SESSION_KEY } from "@app/utils/constant";
-import { IUser } from "@library/api/dto/user.dto";
+import { IUser, SessionToken } from "@library/api/dto/user.dto";
 import { create } from "zustand";
 
 interface AuthState {
@@ -17,12 +17,28 @@ interface AuthActions {
     isRememberMe?: boolean
   ) => Promise<void>;
   logout: () => void;
+  setAuthenticateData: (data: SessionToken) => void;
 }
 
 const useAuthStore = create<AuthState & AuthActions>((set) => ({
   isAuthenticated: null,
   error: null,
   isLoading: false,
+
+  setAuthenticateData: (authToken: SessionToken) => {
+    // Update Zustand state
+    set({
+      isAuthenticated: true,
+      isLoading: false,
+      error: null,
+      user: authToken.user,
+    });
+
+    // You can save the authentication token to localStorage or handle it as needed
+    localStorage.setItem(SESSION_KEY, JSON.stringify(authToken));
+
+    console.log('set authenticated user!!!');
+  },
 
   login: async (username: string, password: string, isRememberMe?: boolean) => {
     set({ isLoading: true, error: null });
@@ -35,17 +51,10 @@ const useAuthStore = create<AuthState & AuthActions>((set) => ({
         password,
         isRememberMe || false
       );
-
-      // Update Zustand state
-      set({
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-        user: authToken.data.user,
+      set((state) => {
+        state.setAuthenticateData(authToken.data);
+        return state;
       });
-
-      // You can save the authentication token to localStorage or handle it as needed
-      localStorage.setItem(SESSION_KEY, JSON.stringify(authToken.data));
     } catch (error) {
       set({
         isAuthenticated: false,

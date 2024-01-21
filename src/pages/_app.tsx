@@ -1,4 +1,4 @@
-import MainLayout from '@app/layouts/main'
+import MainLayout from '@app/layouts'
 import '@app/styles/globals.css'
 import type { AppProps } from 'next/app'
 

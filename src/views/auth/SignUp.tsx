@@ -10,7 +10,7 @@ import * as yup from "yup";
 import message from "@library/api/utils/message";
 import useRegisterStore from "@app/hooks/stores/useRegisterStore";
 import { useRouter } from "next/navigation";
-import { toastGlobal } from "@app/layouts/main";
+import { toastGlobal } from "@app/layouts";
 
 const schema = yup
   .object({

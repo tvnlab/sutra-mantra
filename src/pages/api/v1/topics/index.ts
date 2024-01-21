@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { ApiMethod, HttpStatusCode } from "@library/api/utils/constants";
+import {
+  ApiMethod,
+  HttpStatusCode,
+  TopicSortBy,
+} from "@library/api/utils/constants";
 import TopicModel from "@library/api/model/topic.model";
 import { logError } from "@library/api/utils/logger";
 import { TopicDto } from "@library/api/dto/topic.dto";
@@ -24,20 +28,19 @@ export default async function handler(
         const {
           page = 1,
           pageSize = 10,
-          searchName,
-          searchContent,
-          sortBy = "createdAt",
+          searchNameOrContent,
+          sortBy = TopicSortBy.CREATED_AT,
         } = req.query;
         const skip = ((page as number) - 1) * (pageSize as number);
 
         const query: any = {};
 
-        if (searchName) {
-          query.name = { $regex: searchName, $options: "i" };
+        if (searchNameOrContent) {
+          query.name = { $regex: searchNameOrContent, $options: "i" };
         }
 
-        if (searchContent) {
-          query.content = { $regex: searchContent, $options: "i" };
+        if (searchNameOrContent) {
+          query.content = { $regex: searchNameOrContent, $options: "i" };
         }
 
         const sort: any = {};
@@ -64,7 +67,10 @@ export default async function handler(
 
         const topic = new TopicModel(topicDto);
         const validationErrors = topic.validateSync();
-        if (validationErrors && Object.keys(validationErrors.errors).length > 0) {
+        if (
+          validationErrors &&
+          Object.keys(validationErrors.errors).length > 0
+        ) {
           res
             .status(HttpStatusCode.BadRequest)
             .json({ errors: validationErrors.errors });

@@ -1,5 +1,5 @@
 import apiClient from "@app/utils/apiClient";
-import { IUser, SessionToken } from "@library/api/dto/user.dto";
+import { SessionToken } from "@library/api/dto/user.dto";
 
 export const handleRefreshTokenApi = (refreshToken: string) => {
   return apiClient.post<SessionToken>("/auth/refresh", { refreshToken });
@@ -16,18 +16,17 @@ export const handleLoginApi = (
     isRememberMe,
   });
 };
+
 export const handleRegisterApi = (
   displayName: string,
   email: string,
   password: string,
-  resolution: string,
   isAnonymous?: boolean
 ) => {
-  return apiClient.post<IUser>("/auth/register", {
+  return apiClient.post<SessionToken>("/auth/register", {
     displayName,
     email,
     password,
-    resolution,
     isAnonymous,
   });
 };

@@ -1,5 +1,7 @@
-import { handleRegisterApi } from '@app/services/auth'; // Import your registration API function
-import { create } from 'zustand';
+import { handleRegisterApi } from "@app/services/auth"; // Import your registration API function
+import { SESSION_KEY } from "@app/utils/constant";
+import { create } from "zustand";
+import useAuthStore from "./useAuthStore";
 
 interface RegisterState {
   isRegistered: boolean;
@@ -8,7 +10,12 @@ interface RegisterState {
 }
 
 interface RegisterActions {
-  registerAccount: (displayName: string, email: string, password: string) => Promise<void>;
+  registerAccount: (
+    displayName?: string,
+    email?: string,
+    password?: string,
+    isAnonymous?: boolean,
+  ) => Promise<void>;
 }
 
 const useRegisterStore = create<RegisterState & RegisterActions>((set) => ({
@@ -16,17 +23,35 @@ const useRegisterStore = create<RegisterState & RegisterActions>((set) => ({
   error: null,
   isLoading: false,
 
-  registerAccount: async (displayName: string, email: string, password: string, isAnonymous = false) => {
+  registerAccount: async (
+    displayName = '',
+    email = '',
+    password = '',
+    isAnonymous = false
+  ) => {
+    const { setAuthenticateData } = useAuthStore.getState(); // Get the increment function from Store A
+
+
     set({ isLoading: true, error: null });
-    const resolution = `${window.screen.width}x${window.screen.height}`
     try {
       // Make your registration API call here
-      await handleRegisterApi(displayName, email, password, resolution, isAnonymous);
+      const response = await handleRegisterApi(
+        displayName,
+        email,
+        password,
+        isAnonymous
+      );
 
       // Update Zustand state on successful registration
       set({ isRegistered: true, isLoading: false, error: null });
+
+      setAuthenticateData(response.data)
     } catch (error) {
-      set({ isRegistered: false, isLoading: false, error: (error as Error).message });
+      set({
+        isRegistered: false,
+        isLoading: false,
+        error: (error as Error).message,
+      });
     }
   },
 }));

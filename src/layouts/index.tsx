@@ -1,10 +1,17 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useCallback } from "react";
 import Navbar from "@app/components/navbar";
 import Sidebar from "@app/components/sidebar";
 import Footer from "@app/components/footer/Footer";
 import { usePathname } from "next/navigation";
-import { appMenus } from "@app/utils/routes";
 import { createStandaloneToast } from "@chakra-ui/toast";
+import useCheckAnonymous from "@app/hooks/common/useCheckAnonymous";
+import useCheckAppMenu from "@app/hooks/common/useCheckAppMenu";
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from "@chakra-ui/react";
 
 const { ToastContainer, toast } = createStandaloneToast({
   defaultOptions: {
@@ -25,28 +32,14 @@ interface MainLayoutProps {
 export default function MainLayout(props: MainLayoutProps) {
   const { children, ...rest } = props;
   const pathname = usePathname();
+  const { appMenus, isValidAccess } = useCheckAppMenu();
+
+  // Check and handle anonymous user for the first time logged in
+  useCheckAnonymous();
+
   const [open, setOpen] = React.useState(true);
-  const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
+  const [currentRoute, setCurrentRoute] = React.useState<string>();
 
-  React.useEffect(() => {
-    window.addEventListener("resize", () =>
-      window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
-    );
-  }, []);
-  React.useEffect(() => {
-    getActiveRoute(appMenus);
-  }, [pathname]);
-
-  const getActiveRoute = (appMenus: RoutesType[]): string | boolean => {
-    let activeRoute = "My Homes";
-    if (typeof window === "undefined") return false;
-    for (let i = 0; i < appMenus.length; i++) {
-      if (window.location.href.indexOf(appMenus[i].path) !== -1) {
-        setCurrentRoute(appMenus[i].name);
-      }
-    }
-    return activeRoute;
-  };
   const getActiveNavbar = (appMenus: RoutesType[]): string | boolean => {
     if (typeof window === "undefined") return false;
     let activeNavbar = false;
@@ -57,9 +50,31 @@ export default function MainLayout(props: MainLayoutProps) {
     }
     return activeNavbar;
   };
+
+  const getActiveRoute = useCallback(
+    (appMenus: RoutesType[]): string | boolean => {
+      if (typeof window === "undefined") return "";
+      const item = appMenus.find((v) => v.path === pathname);
+      setCurrentRoute(item?.name || "");
+      return item ? item.name : "";
+    },
+    [pathname]
+  );
+
+  React.useEffect(() => {
+    window.addEventListener("resize", () =>
+      window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
+    );
+  }, []);
+  React.useEffect(() => {
+    if (!appMenus?.length) return;
+    getActiveRoute(appMenus);
+  }, [pathname, appMenus, getActiveRoute]);
+
   if (typeof document !== "undefined") {
     document.documentElement.dir = "ltr";
   }
+
   return (
     <div className="flex h-full w-full">
       <Sidebar open={open} onClose={() => setOpen(false)} />
@@ -78,7 +93,21 @@ export default function MainLayout(props: MainLayoutProps) {
               {...rest}
             />
             <div className="pt-5s mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
-              {children}
+              {isValidAccess ? (
+                children
+              ) : (
+                <div className="mt-10 border-solid border-orange-100 border-2 p-4 rounded-md">
+                  <Alert status="error" className="flex flex-col">
+                    <AlertIcon className="text-orange-400 max-w-12 mb-2"/>
+                    <AlertTitle className="text-primary text-2xl mb-4">Your page is not found!</AlertTitle>
+                    <AlertDescription className="text-orange-200 text-xl text-center">
+                      You are trying to access a unavailable page or you do not
+                      have permission to access. Please try again or contact the
+                      Sutra Mantra Admin. Thank you!
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              )}
             </div>
             <div className="p-3">
               <Footer />
