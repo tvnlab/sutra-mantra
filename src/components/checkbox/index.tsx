@@ -20,8 +20,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ children, ...rest }) => {
         ".chakra-checkbox__control": {
           border: `1px solid rgb(255 255 255 / 0.1)`,
           backgroundColor: "transparent",
-          width: 20,
-          height: 20,
+          width: 6,
+          height: 6,
           borderRadius: 4,
           svg: {
             color: colors["primary"],

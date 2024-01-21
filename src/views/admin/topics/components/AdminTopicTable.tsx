@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import CardMenu from "@app/components/card/CardMenu";
+import React, { useCallback, useEffect } from "react";
+import CardMenu, { CardMenuAction } from "@app/components/card/CardMenu";
 import Checkbox from "@app/components/checkbox";
 import Card from "@app/components/card";
 
@@ -11,11 +11,13 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import useAdminTopic from "@app/hooks/stores/useAdminTopic";
+import useAdminGetTopics from "@app/hooks/stores/useAdminGetTopics";
 import { ITopic } from "@library/api/dto/topic.dto";
 import Image from "next/image";
 import { Tooltip } from "@chakra-ui/react";
 import tailwindConfig from "../../../../../tailwind.config";
+import useAdminDeleteTopics from "@app/hooks/stores/useAdminDeleteTopics";
+import useConfirmStore from "@app/components/confirm-dialog/hooks/useConfirmStore";
 
 const getColors = tailwindConfig.theme.colors as any;
 const colors = getColors();
@@ -25,7 +27,11 @@ interface RowObj extends ITopic {
 }
 
 function CheckTable() {
-  const { topics: tableData, getTopics } = useAdminTopic();
+  const { deleteTopics, setSelectedIds, clearSelectedIds, selectedIds } =
+    useAdminDeleteTopics();
+  const { openConfirm } = useConfirmStore();
+
+  const { topics: tableData, getTopics } = useAdminGetTopics();
   let data = tableData as RowObj[];
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -38,10 +44,16 @@ function CheckTable() {
       cell: (info) => {
         const value = info.getValue();
         return (
-          <div className="flex items-center">
-            <Checkbox defaultChecked={false} />
+          <div
+            className="flex items-center"
+            onClick={() => setSelectedIds(value)}
+          >
+            <Checkbox
+              defaultChecked={false}
+              isChecked={selectedIds.some((v) => v === value)}
+            />
             <Tooltip label={value} color={colors.primary}>
-              <p className="text-sm font-bold text-navy-700 dark:text-white">
+              <p className="text-sm font-bold text-navy-700 dark:text-white hover:cursor-pointer">
                 {value.slice(0, 10) + "..."}
               </p>
             </Tooltip>
@@ -161,9 +173,38 @@ function CheckTable() {
     debugTable: true,
   });
 
+  const onActionClick = useCallback(
+    (action: CardMenuAction) => {
+      switch (action) {
+        case CardMenuAction.DELETE:
+          openConfirm(
+            "Delete Confirmation",
+            "Are you sure you want to delete this item?",
+            async () => {
+              // Put your delete logic here
+              console.log("selectedIds", selectedIds);
+              await deleteTopics(selectedIds);
+              await getTopics();
+              clearSelectedIds();
+            },
+            () => {
+              console.log("Cancelled delete.");
+            }
+          );
+          break;
+        case CardMenuAction.UPDATE:
+          break;
+
+        default:
+          break;
+      }
+    },
+    [selectedIds, openConfirm, clearSelectedIds, deleteTopics, getTopics]
+  );
+
   useEffect(() => {
     if (!getTopics) return;
-    getTopics("");
+    getTopics();
   }, [getTopics]);
 
   return (
@@ -173,7 +214,7 @@ function CheckTable() {
           The Sutra Mantra System&apos;s Topics
         </div>
 
-        <CardMenu />
+        <CardMenu onActionClick={onActionClick} />
       </header>
 
       <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">

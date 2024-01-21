@@ -17,3 +17,11 @@ export const handleGetTopicsApi = (
     },
   });
 };
+
+export const handleDeleteTopicsApi = (ids: string[]) => {
+  return apiClient.delete<Array<ITopic>>("/topics", {
+    params: {
+      ids,
+    },
+  });
+};

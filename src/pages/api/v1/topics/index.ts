@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   ApiMethod,
@@ -15,7 +16,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (![ApiMethod.GET, ApiMethod.POST].includes(req.method as ApiMethod)) {
+  if (
+    ![ApiMethod.GET, ApiMethod.POST, ApiMethod.DELETE].includes(
+      req.method as ApiMethod
+    )
+  ) {
     logError(res, HttpStatusCode.MethodNotAllowed);
   }
 
@@ -86,6 +91,24 @@ export default async function handler(
         res
           .status(HttpStatusCode.InternalServerError)
           .json({ message: message.error[HttpStatusCode.InternalServerError] });
+      }
+      break;
+
+    case ApiMethod.DELETE:
+      try {
+        const ids = req.query['ids[]'];
+        if (!ids?.length)
+          res.status(HttpStatusCode.BadRequest).json({
+            message: message.error.require("Topic Ids"),
+          });
+
+        await TopicModel.deleteMany({ _id: { $in: ids as string[] } });
+        res
+          .status(HttpStatusCode.OK)
+          .json({ message: message.success.deletedMessage("Topic"), ids });
+      } catch (error) {
+        console.error("Error deleting topic:", error);
+        logError(res, HttpStatusCode.InternalServerError);
       }
       break;
 

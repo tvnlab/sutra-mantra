@@ -14,12 +14,14 @@ export const getAppMenus = (validViewPaths: Array<Routes>) => [
     path: Routes.INDEX,
     icon: <GiStairsGoal className="h-6 w-6" />,
     showOnMenu: validViewPaths.some((v) => v === Routes.INDEX),
+    validAccess: validViewPaths.some((v) => v === Routes.INDEX),
   },
   {
     name: "Transcribing",
     path: Routes.TRANSCRIBING,
     icon: <FaPenAlt className="h-6 w-6" />,
     showOnMenu: validViewPaths.some((v) => v === Routes.TRANSCRIBING),
+    validAccess: validViewPaths.some((v) => v === Routes.TRANSCRIBING),
   },
   {
     name: "Buddhist Resources",
@@ -27,36 +29,42 @@ export const getAppMenus = (validViewPaths: Array<Routes>) => [
     icon: <FaBookOpen className="h-6 w-6" />,
     secondary: true,
     showOnMenu: validViewPaths.some((v) => v === Routes.RESOURCES),
+    validAccess: validViewPaths.some((v) => v === Routes.RESOURCES),
   },
   {
     name: "Fellow Communities",
     path: Routes.COMMUNITIES,
     icon: <MdBarChart className="h-6 w-6" />,
     showOnMenu: validViewPaths.some((v) => v === Routes.COMMUNITIES),
+    validAccess: validViewPaths.some((v) => v === Routes.COMMUNITIES),
   },
   {
     name: "Personal Settings",
     path: Routes.SETTINGS,
     icon: <MdPerson className="h-6 w-6" />,
     showOnMenu: validViewPaths.some((v) => v === Routes.SETTINGS),
+    validAccess: validViewPaths.some((v) => v === Routes.SETTINGS),
   },
   {
     name: "Topics",
     path: Routes.TOPIC,
     icon: <MdLock className="h-6 w-6" />,
     showOnMenu: validViewPaths.some((v) => v === Routes.TOPIC),
+    validAccess: validViewPaths.some((v) => v === Routes.TOPIC),
   },
   {
     name: "Sign In",
     path: Routes.LOGIN,
     icon: <MdLock className="h-6 w-6" />,
     showOnMenu: false,
+    validAccess: validViewPaths.some((v) => v === Routes.LOGIN),
   },
   {
     name: "Sign Up",
     path: Routes.REGISTER,
     icon: <MdLock className="h-6 w-6" />,
     showOnMenu: false,
+    validAccess: validViewPaths.some((v) => v === Routes.REGISTER),
   },
 ];
 
@@ -73,7 +81,7 @@ const useCheckAppMenu = () => {
 
   const isValidAccess = useMemo(() => {
     const index = appMenus.findIndex(
-      (v) => v.path === pathname && Boolean(v.showOnMenu)
+      (v) => v.path === pathname && Boolean(v.validAccess)
     );
     return index >= 0;
   }, [pathname, appMenus]);

@@ -12,7 +12,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (![ApiMethod.GET, ApiMethod.PUT, ApiMethod.DELETE].includes(req.method as ApiMethod)) {
+  if (![ApiMethod.GET, ApiMethod.PUT].includes(req.method as ApiMethod)) {
     logError(res, HttpStatusCode.MethodNotAllowed);
   }
 
@@ -60,18 +60,6 @@ export default async function handler(
           .json({ message: message.success.updatedMessage("Topic") });
       } catch (error) {
         console.error("Error updating topic:", error);
-        logError(res, HttpStatusCode.InternalServerError);
-      }
-      break;
-
-    case ApiMethod.DELETE:
-      try {
-        await TopicModel.deleteOne({ _id: new Types.ObjectId(topicId) });
-        res
-          .status(HttpStatusCode.OK)
-          .json({ message: message.success.deletedMessage("Topic") });
-      } catch (error) {
-        console.error("Error deleting topic:", error);
         logError(res, HttpStatusCode.InternalServerError);
       }
       break;

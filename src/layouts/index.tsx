@@ -12,6 +12,7 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
+import ConfirmDialog from "@app/components/confirm-dialog";
 
 const { ToastContainer, toast } = createStandaloneToast({
   defaultOptions: {
@@ -96,11 +97,11 @@ export default function MainLayout(props: MainLayoutProps) {
               {isValidAccess ? (
                 children
               ) : (
-                <div className="mt-10 border-solid border-orange-100 border-2 p-4 rounded-md">
-                  <Alert status="error" className="flex flex-col">
-                    <AlertIcon className="text-orange-400 max-w-12 mb-2"/>
-                    <AlertTitle className="text-primary text-2xl mb-4">Your page is not found!</AlertTitle>
-                    <AlertDescription className="text-orange-200 text-xl text-center">
+                <div className="mt-10">
+                  <Alert status="error" className="flex flex-col !bg-navy-50 rounded-md">
+                    <AlertIcon className="max-w-18 mb-2"/>
+                    <AlertTitle className="text-2xl mb-4">Your page is not found!</AlertTitle>
+                    <AlertDescription className=" text-xl text-center">
                       You are trying to access a unavailable page or you do not
                       have permission to access. Please try again or contact the
                       Sutra Mantra Admin. Thank you!
@@ -116,6 +117,7 @@ export default function MainLayout(props: MainLayoutProps) {
         </main>
       </div>
       <ToastContainer />
+      <ConfirmDialog />
     </div>
   );
 }

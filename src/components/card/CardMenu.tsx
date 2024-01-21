@@ -1,13 +1,23 @@
 import React from "react";
 import Dropdown from "@app/components/dropdown";
-import { AiOutlineUser } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
-import { FiSettings } from "react-icons/fi";
-import { AiOutlineShop } from "react-icons/ai";
-import { TiLightbulb } from "react-icons/ti";
+import { FiEdit, FiPlus } from "react-icons/fi";
+import { AiFillDelete } from "react-icons/ai";
 
-function CardMenu(props: { transparent?: boolean }) {
-  const { transparent } = props;
+export enum CardMenuAction {
+  ADD = "add",
+  UPDATE = "update",
+  DELETE = "delete",
+}
+
+interface CardMenuProps {
+  transparent?: boolean;
+  item?: any;
+  onActionClick?: (action: CardMenuAction) => void;
+}
+
+const CardMenu: React.FC<CardMenuProps> = (props) => {
+  const { transparent, onActionClick } = props;
   const [open, setOpen] = React.useState(false);
   return (
     <Dropdown
@@ -27,33 +37,36 @@ function CardMenu(props: { transparent?: boolean }) {
       classNames={`${transparent ? "top-8" : "top-11"} right-0 w-max`}
     >
       <div className="z-50 w-max rounded-xl bg-white py-3 px-4 text-sm shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <p className="hover:text-black flex cursor-pointer items-center gap-2 text-gray-600 hover:font-medium">
+        <p
+          onClick={() => onActionClick(CardMenuAction.ADD)}
+          className="hover:text-primary mb-4 flex cursor-pointer items-center gap-2 text-gray-600 hover:font-medium"
+        >
           <span>
-            <AiOutlineUser />
+            <FiPlus />
           </span>
-          Panel 1
+          Add New
         </p>
-        <p className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
+        <p
+          onClick={() => onActionClick(CardMenuAction.UPDATE)}
+          className="hover:text-primary mb-4 flex cursor-pointer items-center gap-2 text-gray-600 hover:font-medium"
+        >
           <span>
-            <AiOutlineShop />
+            <FiEdit />
           </span>
-          Panel 2
+          Update
         </p>
-        <p className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
+        <p
+          onClick={() => onActionClick(CardMenuAction.DELETE)}
+          className="hover:text-primary flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium"
+        >
           <span>
-            <TiLightbulb />
+            <AiFillDelete />
           </span>
-          Panel 3
-        </p>
-        <p className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
-          <span>
-            <FiSettings />
-          </span>
-          Panel 4
+          Delete
         </p>
       </div>
     </Dropdown>
   );
-}
+};
 
 export default CardMenu;
