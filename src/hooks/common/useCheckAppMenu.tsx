@@ -73,15 +73,15 @@ const useCheckAppMenu = () => {
   const { user } = useAuthStore();
   const appMenus = useMemo(() => {
     if (!user) return [];
-    if (user.role === UserRole.ADMIN) {
-      return getAppMenus(Object.values(Routes));
-    }
-    return getAppMenus(Object.values(Routes).filter((v) => v !== Routes.TOPIC));
+    const menus = getAppMenus(Object.values(Routes))
+    return menus;
   }, [user]);
 
   const isValidAccess = useMemo(() => {
     const index = appMenus.findIndex(
-      (v) => v.path === pathname && Boolean(v.validAccess)
+      (v) =>
+        (pathname === "/" ? v.path === pathname : pathname?.includes(v.path)) &&
+        Boolean(v.validAccess)
     );
     return index >= 0;
   }, [pathname, appMenus]);

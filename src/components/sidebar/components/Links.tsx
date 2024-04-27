@@ -12,7 +12,9 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
 
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName: string) => {
-    return pathname.endsWith(routeName);
+    return routeName === "/"
+      ? routeName === pathname
+      : pathname?.includes(routeName);
   };
 
   const createLinks = (routes: RoutesType[]) => {

@@ -20,27 +20,21 @@ const TopicCard = (props: {
   const [heart, setHeart] = useState(true);
 
   const handleStartTranscribing = (id?: string) => {
-   
-    const params = new URLSearchParams(searchParams);
-    if (id) {
-      params.set('id', id);
-    } else {
-      params.delete('id');
-    }
-    navigate.push(`${Routes.TRANSCRIBING}?${params.toString()}`);
+    navigate.push(`${Routes.TRANSCRIBING}/${id}`);
   };
 
   return (
     <Card
-      extra={`flex flex-col w-[355px] h-[450px] !p-4 3xl:p-![18px] bg-white ${extra}`}
+      extra={`flex flex-col w-full max-w-[355px] h-[450px] !p-4 3xl:p-![18px] bg-white ${extra}`}
     >
       <div className="h-full w-full">
-        <div className="relative w-full">
+        <div className="relative w-full max-w-[321px] h-[228px] mb-3">
           <Image
             src={image}
-            className="mb-3 h-full w-full rounded-md object-cover"
-            style={{ aspectRatio: "321/228" }}
+            className="h-full w-full rounded-md object-cover"
+            style={{ objectFit: 'cover' }}
             alt=""
+            fill
           />
           <button
             onClick={() => setHeart(!heart)}
@@ -63,7 +57,7 @@ const TopicCard = (props: {
               {title}{" "}
             </p>
             <p className="mt-1 text-sm font-medium text-gray-600 md:mt-2">
-              By {author}{" "}
+              Added by {author}{" "}
             </p>
           </div>
 

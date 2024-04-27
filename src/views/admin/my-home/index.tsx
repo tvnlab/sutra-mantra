@@ -1,12 +1,20 @@
+import useAdminGetTopics from "@app/hooks/stores/useAdminGetTopics";
 import Banner from "./components/Banner";
-// import avatar1 from "@app/assets/img/avatars/avatar1.png";
-// import avatar2 from "@app/assets/img/avatars/avatar2.png";
-// import avatar3 from "@app/assets/img/avatars/avatar3.png";
+import avatar1 from "@app/assets/img/avatars/avatar1.png";
+import avatar2 from "@app/assets/img/avatars/avatar2.png";
+import avatar3 from "@app/assets/img/avatars/avatar3.png";
 
 import TopicCard from "@app/components/card/TopicCard";
+import { useEffect } from "react";
 // import topicData from "@app/variables/topicData";
 
 const MyHomes = () => {
+  const { topics: tableData, getTopics } = useAdminGetTopics();
+
+  useEffect(() => {
+    getTopics();
+  }, [getTopics])
+
   return (
     <div className="col-span-1 mt-3 h-fit w-full xl:col-span-1 2xl:col-span-2">
       {/* Discover Banner */}
@@ -19,16 +27,16 @@ const MyHomes = () => {
 
       {/* NFTs trending card */}
       <div className="z-20 flex flex-wrap gap-5">
-        {/* {topicData.map((item, index) => (
+        {tableData.map((item, index) => (
           <TopicCard
-            id={item.id}
+            id={item._id}
             key={index}
             bidders={[avatar1, avatar2, avatar3]}
             title={item.title}
             author={item.author}
             image={item.image}
           />
-        ))} */}
+        ))}
       </div>
     </div>
   );

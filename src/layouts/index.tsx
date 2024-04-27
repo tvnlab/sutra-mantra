@@ -55,7 +55,7 @@ export default function MainLayout(props: MainLayoutProps) {
   const getActiveRoute = useCallback(
     (appMenus: RoutesType[]): string | boolean => {
       if (typeof window === "undefined") return "";
-      const item = appMenus.find((v) => v.path === pathname);
+      const item = appMenus.find((v) => pathname !== '/' ? pathname?.includes(v.path) : v.path === pathname);
       setCurrentRoute(item?.name || "");
       return item ? item.name : "";
     },
